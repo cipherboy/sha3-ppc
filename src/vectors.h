@@ -66,7 +66,7 @@ typedef union {
 
 static inline void print_vec(p_v128 c)
 {
-    printf(" < [%lu, %lu] > \n", c[VEC_DW_H], c[VEC_DW_L]);
+    printf(" < [%lu, %lu] > \n", c.vx1[VEC_DW_H], c.vx1[VEC_DW_L]);
 }
 
 #endif

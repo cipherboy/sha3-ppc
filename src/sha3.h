@@ -28,37 +28,37 @@ typedef union {
 
 static inline void print_sheet(sha3_sheet c)
 {
-    printf(" < [%lu, %lu], [%lu, %lu], [%lu, %lu] > \n", c.vec.a[VEC_DW_H],
-           c.vec.a[VEC_DW_L], c.vec.b[VEC_DW_H], c.vec.b[VEC_DW_L], c.vec.c[VEC_DW_H],
-           c.vec.c[VEC_DW_L]);
+    printf(" < [%lu, %lu], [%lu, %lu], [%lu, %lu] > \n", c.vec.a.vx1[VEC_DW_H],
+           c.vec.a.vx1[VEC_DW_L], c.vec.b.vx1[VEC_DW_H], c.vec.b.vx1[VEC_DW_L], c.vec.c.vx1[VEC_DW_H],
+           c.vec.c.vx1[VEC_DW_L]);
 }
 
 
 static inline void sha3_sheet_swpl_one(sha3_sheet *s)
 {
     const vui128_t vperm_mask = CONST_VINT128(VPERM_0_MASK_L, VPERM_1_MASK_H);
-    s->vec.c[VEC_DW_L] = s->vec.a[VEC_DW_H];
+    s->vec.c.vx1[VEC_DW_L] = s->vec.a.vx1[VEC_DW_H];
     s->vec.a.vx1 = vec_perm(s->vec.a.vx1, s->vec.b.vx1, vperm_mask);
     s->vec.b.vx1 = vec_perm(s->vec.b.vx1, s->vec.c.vx1, vperm_mask);
-    s->vec.a[VEC_DW_H]; = s->vec.c[VEC_DW_L];
+    s->vec.a.vx1[VEC_DW_H]; = s->vec.c.vx1[VEC_DW_L];
 }
 
 static inline void sha3_sheet_swpl_two(sha3_sheet *s)
 {
-    uint64_t tmp = s->vec.a[VEC_DW_L];
-    s->vec.c[VEC_DW_L] = s->vec.a[VEC_DW_H];
+    uint64_t tmp = s->vec.a.vx1[VEC_DW_L];
+    s->vec.c.vx1[VEC_DW_L] = s->vec.a.vx1[VEC_DW_H];
     s->vec.a.vx1 = s->vec.b.vx1;
     s->vec.b.vx1 = s->vec.c.vx1;
-    s->vec.c[VEC_DW_H] = tmp;
+    s->vec.c.vx1[VEC_DW_H] = tmp;
 }
 
 static inline void sha3_sheet_swpr_one(sha3_sheet *s)
 {
     const vui128_t vperm_mask = CONST_VINT128(VPERM_0_MASK_L, VPERM_1_MASK_H);
-    s->vec.c[VEC_DW_L] = s->vec.b[VEC_DW_L];
+    s->vec.c.vx1[VEC_DW_L] = s->vec.b.vx1[VEC_DW_L];
     s->vec.b.vx1 = vec_perm(s->vec.a.vx1, s->vec.b.vx1, vperm_mask);
     s->vec.a.vx1 = vec_perm(s->vec.c.vx1, s->vec.a.vx1, vperm_mask);
-    s->vec.a[VEC_DW_H]; = s->vec.c[VEC_DW_L];
+    s->vec.a.vx1[VEC_DW_H]; = s->vec.c.vx1[VEC_DW_L];
 }
 
 static inline void sha3_sheet_rotl(sha3_sheet *s)
