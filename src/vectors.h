@@ -12,6 +12,9 @@
 #ifndef SHA3_VECTORS_H
 #define SHA3_VECTORS_H
 
+
+typedef __vector unsigned long long vui64_t;
+
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
     typedef __vector unsigned __int128 vui128_t;
 #else
@@ -19,7 +22,11 @@
 #endif
 
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-    #define CONST_VINT128(__dw0, __dw1) (vui128_t){__dw1, __dw0}
+    #define CONST_VINT64_DW(__dw0, __dw1) {__dw1, __dw0}
+    #define CONST_VINT128_DW(__dw0, __dw1) (vui64_t){__dw1, __dw0}
+    #define CONST_VINT128(__dw0, __dw1) (vui128_t)((vui64_t){__dw1, __dw0})
+    #define CONST_VINT128_W(__w0, __w1, __w2, __w3) (vui32_t){__w3, __w2, __w1, __w0}
+    #define CONST_VINT32_W(__w0, __w1, __w2, __w3) {__w3, __w2, __w1, __w0}
     #define VEC_DW_H 1
     #define VEC_DW_L 0
     #define VEC_W_H 3
@@ -28,14 +35,16 @@
     #define VEC_BYTE_L 0
     #define VEC_BYTE_H 15
     #define VEC_BYTE_HHW 14
-    #define VPERM_0_MASK_H 0x08090A0B0C0D0E0F
-    #define VPERM_0_MASK_L 0x0001020304050607
-    #define VPERM_1_MASK_H 0x18191A1B1C1D1E1F
-    #define VPERM_1_MASK_L 0x1011121314151617
-
-
+    #define VEC_PERM_0_MASK_H 0x08090A0B0C0D0E0FULL
+    #define VEC_PERM_0_MASK_L 0x0001020304050607ULL
+    #define VEC_PERM_1_MASK_H 0x18191A1B1C1D1E1FULL
+    #define VEC_PERM_1_MASK_L 0x1011121314151617ULL
 #else
-    #define CONST_VINT128(__dw0, __dw1) (vui128_t){__dw0, __dw1}
+    #define CONST_VINT64_DW(__dw0, __dw1) {__dw0, __dw1}
+    #define CONST_VINT128_DW(__dw0, __dw1) (vui64_t){__dw0, __dw1}
+    #define CONST_VINT128(__dw0, __dw1) (vui128_t)((vui64_t){__dw0, __dw1})
+    #define CONST_VINT128_W(__w0, __w1, __w2, __w3) (vui32_t){__w0, __w1, __w2, __w3}
+    #define CONST_VINT32_W(__w0, __w1, __w2, __w3) {__w0, __w1, __w2, __w3}
     #define VEC_DW_H 0
     #define VEC_DW_L 1
     #define VEC_W_H 0
@@ -44,10 +53,10 @@
     #define VEC_BYTE_L 15
     #define VEC_BYTE_H 0
     #define VEC_BYTE_HHW 1
-    #define VPERM_0_MASK_H 0x0001020304050607
-    #define VPERM_0_MASK_L 0x08090A0B0C0D0E0F
-    #define VPERM_1_MASK_H 0x1011121314151617
-    #define VPERM_1_MASK_L 0x18191A1B1C1D1E1F
+    #define VEC_PERM_0_MASK_H 0x0001020304050607ULL
+    #define VEC_PERM_0_MASK_L 0x08090A0B0C0D0E0FULL
+    #define VEC_PERM_1_MASK_H 0x1011121314151617ULL
+    #define VEC_PERM_1_MASK_L 0x18191A1B1C1D1E1FULL
 #endif
 
 typedef union {

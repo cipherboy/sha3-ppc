@@ -36,7 +36,7 @@ static inline void print_sheet(sha3_sheet c)
 
 static inline void sha3_sheet_swpl_one(sha3_sheet *s)
 {
-    const vui128_t vperm_mask = CONST_VINT128(VPERM_0_MASK_L, VPERM_1_MASK_H);
+    const vui128_t vperm_mask = CONST_VINT128(VEC_PERM_0_MASK_L, VEC_PERM_1_MASK_H);
     s->vec.c.vx1[VEC_DW_L] = s->vec.a.vx1[VEC_DW_H];
     s->vec.a.vx1 = vec_perm(s->vec.a.vx1, s->vec.b.vx1, vperm_mask);
     s->vec.b.vx1 = vec_perm(s->vec.b.vx1, s->vec.c.vx1, vperm_mask);
@@ -54,7 +54,7 @@ static inline void sha3_sheet_swpl_two(sha3_sheet *s)
 
 static inline void sha3_sheet_swpr_one(sha3_sheet *s)
 {
-    const vui128_t vperm_mask = CONST_VINT128(VPERM_0_MASK_L, VPERM_1_MASK_H);
+    const vui128_t vperm_mask = CONST_VINT128(VEC_PERM_0_MASK_L, VEC_PERM_1_MASK_H);
     s->vec.c.vx1[VEC_DW_L] = s->vec.b.vx1[VEC_DW_L];
     s->vec.b.vx1 = vec_perm(s->vec.a.vx1, s->vec.b.vx1, vperm_mask);
     s->vec.a.vx1 = vec_perm(s->vec.c.vx1, s->vec.a.vx1, vperm_mask);
