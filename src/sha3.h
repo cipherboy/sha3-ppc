@@ -20,6 +20,7 @@ typedef union {
     uint64_t arr[5];
 } sha3_sheet;
 
+// Vector slot (5 + 6n) are unused
 typedef union {
     sha3_sheet s[5];
     uint64_t arr[30];
@@ -33,20 +34,39 @@ static inline void print_sheet(sha3_sheet c)
 }
 
 
-static inline void sha3_sheet_rotl_one(sha3_sheet *s)
+static inline void sha3_sheet_swpl_one(sha3_sheet *s)
 {
-    const p_v128 vperm_mask = CONST_VINT128(VPERM_0_MASK_L, VPERM_1_MASK_H);
+    const vui128_t vperm_mask = CONST_VINT128(VPERM_0_MASK_L, VPERM_1_MASK_H);
     s->vec.c[VEC_DW_L] = s->vec.a[VEC_DW_H];
-    vec_perm()
+    s->vec.a.vx1 = vec_perm(s->vec.a.vx1, s->vec.b.vx1, vperm_mask);
+    s->vec.b.vx1 = vec_perm(s->vec.b.vx1, s->vec.c.vx1, vperm_mask);
+    s->vec.a[VEC_DW_H]; = s->vec.c[VEC_DW_L];
 }
 
-static inline void sha3_sheet_rotl_two(sha3_sheet *s)
+static inline void sha3_sheet_swpl_two(sha3_sheet *s)
 {
     uint64_t tmp = s->vec.a[VEC_DW_L];
     s->vec.c[VEC_DW_L] = s->vec.a[VEC_DW_H];
     s->vec.a.vx1 = s->vec.b.vx1;
     s->vec.b.vx1 = s->vec.c.vx1;
     s->vec.c[VEC_DW_H] = tmp;
+}
+
+static inline void sha3_sheet_swpr_one(sha3_sheet *s)
+{
+    const vui128_t vperm_mask = CONST_VINT128(VPERM_0_MASK_L, VPERM_1_MASK_H);
+    s->vec.c[VEC_DW_L] = s->vec.b[VEC_DW_L];
+    s->vec.b.vx1 = vec_perm(s->vec.a.vx1, s->vec.b.vx1, vperm_mask);
+    s->vec.a.vx1 = vec_perm(s->vec.c.vx1, s->vec.a.vx1, vperm_mask);
+    s->vec.a[VEC_DW_H]; = s->vec.c[VEC_DW_L];
+}
+
+static inline void sha3_sheet_rotl(sha3_sheet *s)
+{
+    const vui128_t shift_mask = CONST_VINT128(1, 1);
+    s->vec.a.vx1 = vec_vrld(s->vec.a.vx1, shift_mask);
+    s->vec.b.vx1 = vec_vrld(s->vec.b.vx1, shift_mask);
+    s->vec.c.vx1 = vec_vrld(s->vec.c.vx1, shift_mask);
 }
 
 
