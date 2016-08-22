@@ -78,7 +78,7 @@ static inline void sha3_sheet_rotl_var(sha3_sheet *s, int shift_high, int shift_
     s->vec.c.vx = vec_vrld(s->vec.c.vx, shift_mask);
 }
 
-static inline void sha3_theta(sha3_sheet *s)
+static inline void sha3_theta(sha3_state *A)
 {
     sha3_sheet c;
     sha3_sheet c_c;
@@ -128,7 +128,7 @@ static inline void sha3_theta(sha3_sheet *s)
     }
 }
 
-static inline void sha3_chi(sha3_sheet *s) {
+static inline void sha3_chi(sha3_state *A) {
     sha3_sheet a;
     sha3_sheet b;
     int i = 0
@@ -156,6 +156,28 @@ static inline void sha3_chi(sha3_sheet *s) {
         A->s[i].vec.b.vx = vec_xor(A->s[i].vec.b.vx, a.vec.b.vx);
         A->s[i].vec.c.vx = vec_xor(A->s[i].vec.c.vx, a.vec.c.vx);
     }
+}
+
+static inline void sha3_rho(sha3_state *A) {
+    sha3_sheet_rotl_var(&A->s[0].vec.a.vx, 0, 1);
+    sha3_sheet_rotl_var(&A->s[0].vec.b.vx, 62, 28);
+    sha3_sheet_rotl_var(&A->s[0].vec.c.vx, 27, 0);
+
+    sha3_sheet_rotl_var(&A->s[1].vec.a.vx, 36, 44);
+    sha3_sheet_rotl_var(&A->s[1].vec.b.vx, 6, 55);
+    sha3_sheet_rotl_var(&A->s[1].vec.c.vx, 20, 0);
+
+    sha3_sheet_rotl_var(&A->s[2].vec.a.vx, 3, 10);
+    sha3_sheet_rotl_var(&A->s[2].vec.b.vx, 43, 25);
+    sha3_sheet_rotl_var(&A->s[2].vec.c.vx, 39, 0);
+
+    sha3_sheet_rotl_var(&A->s[3].vec.a.vx, 41, 45);
+    sha3_sheet_rotl_var(&A->s[3].vec.b.vx, 15, 21);
+    sha3_sheet_rotl_var(&A->s[3].vec.c.vx, 8, 0);
+
+    sha3_sheet_rotl_var(&A->s[4].vec.a.vx, 18, 2);
+    sha3_sheet_rotl_var(&A->s[4].vec.b.vx, 61, 56);
+    sha3_sheet_rotl_var(&A->s[4].vec.c.vx, 14, 0);
 }
 
 #endif
