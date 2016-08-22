@@ -32,8 +32,6 @@
     #define VPERM_0_MASK_L 0x0001020304050607
     #define VPERM_1_MASK_H 0x18191A1B1C1D1E1F
     #define VPERM_1_MASK_L 0x1011121314151617
-
-
 #else
     #define CONST_VINT128(__dw0, __dw1) (vui128_t){__dw0, __dw1}
     #define VEC_DW_H 0
@@ -51,7 +49,7 @@
 #endif
 
 typedef union {
-    vui128_t vx1;
+    vui128_t vx;
 
     struct {
         #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
@@ -66,7 +64,7 @@ typedef union {
 
 static inline void print_vec(p_v128 c)
 {
-    printf(" < [%lu, %lu] > \n", c.vx1[VEC_DW_H], c.vx1[VEC_DW_L]);
+    printf(" < [%lu, %lu] > \n", c.vx[VEC_DW_H], c.vx[VEC_DW_L]);
 }
 
 #endif
